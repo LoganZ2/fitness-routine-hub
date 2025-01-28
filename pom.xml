@@ -5,16 +5,16 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>2.7.0</version>
+		<relativePath/>
 	</parent>
 	<groupId>com.MIE350.</groupId>
-	<artifactId>FitnessCommunityHub</artifactId>
+	<artifactId>FitnessRoutineHub</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>FitnessCommunityHub</name>
 	<description>A web application for fitness challenges and community interaction. Developed for the MIE350 Course Project.</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -1,19 +1,16 @@
 package com.MIE350.FitnessRoutineHub.model.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.Data;
+import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Table(name = "Posts")
 public class Post {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
