@@ -18,6 +18,7 @@ public class User {
     private Long id;
 
     @NotNull
+    @Column(unique = true)
     private String username;
 
     private String description;
@@ -26,7 +27,6 @@ public class User {
     private List<Post> posts;
 
     @NotNull
-    @Column(nullable = false)
     private Instant createdAt;
 
     private Instant updateAt;
