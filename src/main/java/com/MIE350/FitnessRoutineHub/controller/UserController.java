@@ -1,6 +1,7 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
-
+import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
+import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
 import com.MIE350.FitnessRoutineHub.model.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    List<User> retrieveAllUsers() {
+    List<UsersDTO> retrieveAllUsers() {
         return userService.getUsers();
     }
 
@@ -29,18 +30,26 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    User retrieveUser(@PathVariable("id") Long userId) {
-        return userService.getUser(userId);
+    UserDTO retrieveUser(@PathVariable("id") Long id) {
+        return userService.getUser(id);
     }
 
-    @PutMapping("/users")
+    @PatchMapping("/users")
     User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
 
     @DeleteMapping("/users/{id}")
-    boolean deleteUser(@PathVariable("id") Long userId) {
-        return userService.deleteUser(userId);
+    void deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+    }
+    @PatchMapping("/users/add-friend")
+    void addFriend (@RequestParam Long id, @RequestParam Long friendId) {
+        userService.addUser(id, friendId);
     }
 
+    @PatchMapping("/users/remove-friend")
+    void removeFriend (@RequestParam Long id, @RequestParam Long friendId) {
+        userService.removeUser(id, friendId);
+    }
 }
