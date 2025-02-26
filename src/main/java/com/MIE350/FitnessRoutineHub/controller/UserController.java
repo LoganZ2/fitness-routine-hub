@@ -1,5 +1,6 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.FriendDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
@@ -20,17 +21,17 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    List<UsersDTO> retrieveAllUsers() {
+    List<UsersDTO> getUsers() {
         return userService.getUsers();
     }
 
     @PostMapping("/users")
-    User createUser(@RequestBody User user) {
+    User newUser(@RequestBody User user) {
         return userService.newUser(user);
     }
 
     @GetMapping("/users/{id}")
-    UserDTO retrieveUser(@PathVariable("id") Long id) {
+    UserDTO getUser(@PathVariable("id") Long id) {
         return userService.getUser(id);
     }
 
@@ -44,12 +45,17 @@ public class UserController {
         userService.deleteUser(id);
     }
     @PatchMapping("/users/add-friend")
-    void addFriend (@RequestParam Long id, @RequestParam Long friendId) {
-        userService.addUser(id, friendId);
+    void addFriend (@RequestBody FriendDTO friendDTO) {
+        userService.addUser(friendDTO.getId(), friendDTO.getFriendId());
     }
 
     @PatchMapping("/users/remove-friend")
-    void removeFriend (@RequestParam Long id, @RequestParam Long friendId) {
-        userService.removeUser(id, friendId);
+    void removeFriend (@RequestBody FriendDTO friendDTO) {
+        userService.removeUser(friendDTO.getId(), friendDTO.getFriendId());
+    }
+
+    @GetMapping("/users/friends/{id}")
+    List<UserDTO> getFriends(@PathVariable Long id) {
+        return userService.getFriends(id);
     }
 }

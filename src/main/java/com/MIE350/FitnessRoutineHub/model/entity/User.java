@@ -3,6 +3,7 @@ package com.MIE350.FitnessRoutineHub.model.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class User {
     private String description;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Post> posts;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -39,15 +41,11 @@ public class User {
     )
     private Set<User> friends = new HashSet<>();
 
-    public Set<Long> getFriends() {
+    public Set<Long> getFriendsLong() {
         return this.friends
                 .stream()
                 .map(User::getId)
                 .collect(Collectors.toSet());
-    }
-
-    public Set<User> getFriendsUser() {
-        return this.friends;
     }
 
     public void addFriend(User friend) {
@@ -61,7 +59,12 @@ public class User {
     }
 
     @OneToOne
+    @JsonManagedReference
     private FitnessCalendar fitnessCalendar;
+
+    @OneToOne
+    @JsonManagedReference
+    private HealthProfile healthProfile;
 
     @NotNull
     private Instant createdAt;

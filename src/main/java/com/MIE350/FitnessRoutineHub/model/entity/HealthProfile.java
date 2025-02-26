@@ -1,6 +1,7 @@
 package com.MIE350.FitnessRoutineHub.model.entity;
 
 import com.MIE350.FitnessRoutineHub.utils.UnitUtils.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 
@@ -19,6 +20,7 @@ public class HealthProfile {
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
+    @JsonBackReference
     private User user;
 
     private Gender gender;

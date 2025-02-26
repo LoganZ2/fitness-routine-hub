@@ -2,6 +2,7 @@ package com.MIE350.FitnessRoutineHub.model.service;
 
 import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
+import com.MIE350.FitnessRoutineHub.controller.exceptions.AlreadyFriendsException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.DuplicateUsernameException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
@@ -25,7 +26,7 @@ public class UserService implements IUserService {
     public List<UsersDTO> getUsers() {
         return repository.findAll()
                 .stream()
-                .map(user -> new UsersDTO(user.getId(), user.getUsername(), user.getDescription()))
+                .map(user -> new UsersDTO(user))
                 .collect(Collectors.toList());
     }
 
@@ -33,15 +34,7 @@ public class UserService implements IUserService {
     public UserDTO getUser(Long id) {
         User user = repository.findById(id).orElse(null);
         if (user != null) {
-            return new UserDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getDescription(),
-                user.getPosts(),
-                user.getFriends(),
-                user.getCreatedAt(),
-                user.getUpdateAt()
-            );
+            return new UserDTO(user);
         }
         return null;
     }
@@ -67,7 +60,7 @@ public class UserService implements IUserService {
             userOld.setPosts(user.getPosts());
             userOld.setDescription(user.getDescription());
             userOld.setFitnessCalendar(user.getFitnessCalendar());
-            userOld.setFriends(user.getFriendsUser());
+            userOld.setFriends(user.getFriends());
             userOld.setUpdateAt(Instant.now());
             return repository.save(userOld);
         }).orElseThrow(UserNotFoundException::new);
@@ -82,6 +75,9 @@ public class UserService implements IUserService {
     public void addUser(Long id, Long friendId) {
         User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
         User friend = repository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
+        if (user.getFriendsLong().contains(friendId)) {
+            throw new AlreadyFriendsException();
+        }
         user.addFriend(friend);
         updateUser(user);
     }
@@ -92,5 +88,11 @@ public class UserService implements IUserService {
         User friend = repository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
         user.removeFriend(friend);
         updateUser(user);
+    }
+
+    @Override
+    public List<UserDTO> getFriends(Long id) {
+        User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+        return repository.findAllById(user.getFriendsLong()).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
     }
 }

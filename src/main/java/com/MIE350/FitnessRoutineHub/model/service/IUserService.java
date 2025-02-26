@@ -14,4 +14,5 @@ public interface IUserService {
     void deleteUser(Long id);
     void addUser(Long id, Long friendId);
     void removeUser(Long id, Long friendId);
+    List<UserDTO> getFriends(Long id);
 }
