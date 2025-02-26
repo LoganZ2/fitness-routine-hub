@@ -22,22 +22,16 @@ public class Post {
     private User user;
 
     @Column(nullable = false)
+    private String title;
+
     private String body;
 
-    private String comments;
+    @OneToMany(mappedBy = "post_id")
+    private List<Reply> replies;
 
     @NotNull
     private Instant createdAt;
 
     private Instant updateAt;
-
-    public void setComments(String comments) throws Exception {
-        JSONParser parser = new JSONParser(comments);
-        Object result = parser.parse();
-        if (!(result instanceof List)) {
-            throw new Exception("Comments object should be an json array");
-        }
-        this.comments = comments;
-    }
 
 }
