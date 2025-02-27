@@ -50,6 +50,7 @@ public class PostService implements IPostService {
         if (post.getType() != null) postOld.setType(post.getType());
         if (post.getBody() != null) postOld.setBody(post.getBody());
         if (post.getReplies() != null) postOld.setReplies(post.getReplies());
+        if (post.getLikes() != null) postOld.setLikes(post.getLikes());
         postOld.setUpdateAt(Instant.now());
         return repository.save(postOld);
     }

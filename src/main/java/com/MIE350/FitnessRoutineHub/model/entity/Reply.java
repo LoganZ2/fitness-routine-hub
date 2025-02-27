@@ -21,6 +21,8 @@ public class Reply {
     @NotNull
     private String content;
 
+    private Integer likes;
+
     @NotNull
     private Instant createdAt;
 }
