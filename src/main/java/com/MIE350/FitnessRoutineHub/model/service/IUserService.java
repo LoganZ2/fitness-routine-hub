@@ -12,7 +12,7 @@ public interface IUserService {
     User newUser(User user);
     User updateUser(User user);
     void deleteUser(Long id);
-    void addUser(Long id, Long friendId);
-    void removeUser(Long id, Long friendId);
+    void addFriend(Long id, Long friendId);
+    void removeFriend(Long id, Long friendId);
     List<UserDTO> getFriends(Long id);
 }

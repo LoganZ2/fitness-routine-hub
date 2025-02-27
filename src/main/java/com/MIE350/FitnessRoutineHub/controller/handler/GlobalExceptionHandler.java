@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorRes handleCustomException(RuntimeException ex) {
-        return new ErrorRes(400, ex.getMessage());
+        return new ErrorRes(500, ex.getMessage());
     }
 }
 @Data

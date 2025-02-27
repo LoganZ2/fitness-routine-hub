@@ -12,7 +12,9 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private final IUserService userService;
 
@@ -20,41 +22,42 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     List<UsersDTO> getUsers() {
         return userService.getUsers();
     }
 
-    @PostMapping("/users")
+    @PostMapping
     User newUser(@RequestBody User user) {
         return userService.newUser(user);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     UserDTO getUser(@PathVariable("id") Long id) {
         return userService.getUser(id);
     }
 
-    @PatchMapping("/users")
+    @PatchMapping
     User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     void deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }
-    @PatchMapping("/users/add-friend")
+
+    @PatchMapping("/add-friend")
     void addFriend (@RequestBody FriendDTO friendDTO) {
-        userService.addUser(friendDTO.getId(), friendDTO.getFriendId());
+        userService.addFriend(friendDTO.getId(), friendDTO.getFriendId());
     }
 
-    @PatchMapping("/users/remove-friend")
+    @PatchMapping("/remove-friend")
     void removeFriend (@RequestBody FriendDTO friendDTO) {
-        userService.removeUser(friendDTO.getId(), friendDTO.getFriendId());
+        userService.removeFriend(friendDTO.getId(), friendDTO.getFriendId());
     }
 
-    @GetMapping("/users/friends/{id}")
+    @GetMapping("/friends/{id}")
     List<UserDTO> getFriends(@PathVariable Long id) {
         return userService.getFriends(id);
     }

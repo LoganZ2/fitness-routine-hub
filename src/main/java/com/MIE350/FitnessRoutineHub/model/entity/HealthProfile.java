@@ -9,9 +9,15 @@ import javax.persistence.*;
 public class HealthProfile {
 
     public enum Gender {
-        Male,
-        Female,
-        Other
+        MALE,
+        FEMALE,
+        OTHER
+    }
+
+    public enum Objective {
+        BULK,
+        CUT,
+        MAINTAIN
     }
 
     @Id
@@ -32,6 +38,8 @@ public class HealthProfile {
     private Integer weight;
 
     private WeightUnit weightUnit;
+
+    private Objective objective;
 
 }
 

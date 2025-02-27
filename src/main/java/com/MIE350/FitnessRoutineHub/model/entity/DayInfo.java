@@ -1,7 +1,6 @@
 package com.MIE350.FitnessRoutineHub.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

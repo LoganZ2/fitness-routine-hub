@@ -7,6 +7,7 @@ import com.MIE350.FitnessRoutineHub.controller.exceptions.DuplicateUsernameExcep
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
 import com.MIE350.FitnessRoutineHub.model.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -32,11 +33,8 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO getUser(Long id) {
-        User user = repository.findById(id).orElse(null);
-        if (user != null) {
-            return new UserDTO(user);
-        }
-        return null;
+        User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+        return new UserDTO(user);
     }
 
     @Override
@@ -51,19 +49,21 @@ public class UserService implements IUserService {
 
     @Override
     public User updateUser(User user) {
-        Long userId = user.getId();
-        return repository.findById(userId).map(userOld -> {
-            if (!user.getUsername().equals(userOld.getUsername()) && repository.existsByUsername(user.getUsername())) {
-                throw new DuplicateUsernameException();
-            }
-            userOld.setUsername(user.getUsername());
-            userOld.setPosts(user.getPosts());
-            userOld.setDescription(user.getDescription());
-            userOld.setFitnessCalendar(user.getFitnessCalendar());
-            userOld.setFriends(user.getFriends());
-            userOld.setUpdateAt(Instant.now());
-            return repository.save(userOld);
-        }).orElseThrow(UserNotFoundException::new);
+        User userOld = repository.findById(user.getId())
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!user.getUsername().equals(userOld.getUsername()) && repository.existsByUsername(user.getUsername())) {
+            throw new DuplicateUsernameException();
+        }
+
+        if (user.getUsername() != null) userOld.setUsername(user.getUsername());
+        if (user.getPosts() != null) userOld.setPosts(user.getPosts());
+        if (user.getDescription() != null) userOld.setDescription(user.getDescription());
+        if (user.getFitnessCalendar() != null) userOld.setFitnessCalendar(user.getFitnessCalendar());
+        if (user.getFriends() != null) userOld.setFriends(user.getFriends());
+
+        userOld.setUpdateAt(Instant.now());
+        return repository.save(userOld);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void addUser(Long id, Long friendId) {
+    public void addFriend(Long id, Long friendId) {
         User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
         User friend = repository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
         if (user.getFriendsLong().contains(friendId)) {
@@ -83,7 +83,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void removeUser(Long id, Long friendId) {
+    public void removeFriend(Long id, Long friendId) {
         User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
         User friend = repository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
         user.removeFriend(friend);
