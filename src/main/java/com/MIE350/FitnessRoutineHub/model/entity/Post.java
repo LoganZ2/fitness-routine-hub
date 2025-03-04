@@ -39,7 +39,8 @@ public class Post {
 
     private String body;
 
-    private Integer likes;
+    @OneToMany
+    private List<User> likes;
 
     @OneToMany(mappedBy = "post")
     private List<Reply> replies;

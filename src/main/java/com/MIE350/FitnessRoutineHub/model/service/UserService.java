@@ -4,10 +4,13 @@ import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.AlreadyFriendsException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.DuplicateUsernameException;
+import com.MIE350.FitnessRoutineHub.controller.exceptions.PostNotFoundException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
+import com.MIE350.FitnessRoutineHub.model.entity.Post;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
+import com.MIE350.FitnessRoutineHub.model.repository.PostRepository;
 import com.MIE350.FitnessRoutineHub.model.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -17,15 +20,18 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements IUserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository, PostRepository postRepository) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
+
 
     @Override
     public List<UsersDTO> getUsers() {
-        return repository.findAll()
+        return userRepository.findAll()
                 .stream()
                 .map(user -> new UsersDTO(user))
                 .collect(Collectors.toList());
@@ -33,26 +39,26 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO getUser(Long id) {
-        User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return new UserDTO(user);
     }
 
     @Override
     public User newUser(User user) {
-        if (repository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new DuplicateUsernameException();
         }
         user.setCreatedAt(Instant.now());
         user.setId(null);
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User updateUser(User user) {
-        User userOld = repository.findById(user.getId())
+        User userOld = userRepository.findById(user.getId())
                 .orElseThrow(UserNotFoundException::new);
 
-        if (!user.getUsername().equals(userOld.getUsername()) && repository.existsByUsername(user.getUsername())) {
+        if (!user.getUsername().equals(userOld.getUsername()) && userRepository.existsByUsername(user.getUsername())) {
             throw new DuplicateUsernameException();
         }
 
@@ -63,18 +69,18 @@ public class UserService implements IUserService {
         if (user.getFriends() != null) userOld.setFriends(user.getFriends());
 
         userOld.setUpdateAt(Instant.now());
-        return repository.save(userOld);
+        return userRepository.save(userOld);
     }
 
     @Override
     public void deleteUser(Long id) {
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public void addFriend(Long id, Long friendId) {
-        User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
-        User friend = repository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User friend = userRepository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
         if (user.getFriendsLong().contains(friendId)) {
             throw new AlreadyFriendsException();
         }
@@ -84,15 +90,16 @@ public class UserService implements IUserService {
 
     @Override
     public void removeFriend(Long id, Long friendId) {
-        User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
-        User friend = repository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User friend = userRepository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
         user.removeFriend(friend);
         updateUser(user);
     }
 
     @Override
     public List<UserDTO> getFriends(Long id) {
-        User user = repository.findById(id).orElseThrow(UserNotFoundException::new);
-        return repository.findAllById(user.getFriendsLong()).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return userRepository.findAllById(user.getFriendsLong()).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
     }
+
 }

@@ -2,10 +2,14 @@ package com.MIE350.FitnessRoutineHub.model.entity;
 
 import com.MIE350.FitnessRoutineHub.utils.UnitUtils.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 public class HealthProfile {
 
     public enum Gender {
@@ -38,6 +42,8 @@ public class HealthProfile {
     private Integer weight;
 
     private WeightUnit weightUnit;
+
+    private Integer age;
 
     private Objective objective;
 
