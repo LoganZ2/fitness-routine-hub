@@ -62,11 +62,11 @@ public class User {
 
     @OneToOne
     @JsonManagedReference
-    private FitnessCalendar fitnessCalendar;
-
-    @OneToOne
-    @JsonManagedReference
     private HealthProfile healthProfile;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private List<DayInfo> dayInfos;
 
     @NotNull
     private Instant createdAt;

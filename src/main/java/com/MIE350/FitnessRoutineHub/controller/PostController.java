@@ -1,9 +1,11 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.LikeDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
 import com.MIE350.FitnessRoutineHub.model.entity.Post.PostType;
+import com.MIE350.FitnessRoutineHub.model.entity.Reply;
 import com.MIE350.FitnessRoutineHub.model.service.IPostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.MIE350.FitnessRoutineHub.model.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,11 +15,12 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController {
 
-    @Autowired
     private final IPostService postService;
+    private final IUserService userService;
 
-    public PostController(IPostService postService) {
+    public PostController(IPostService postService, IUserService userService) {
         this.postService = postService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -43,5 +46,15 @@ public class PostController {
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);
+    }
+
+    @PostMapping("/like")
+    public boolean addLike(@RequestBody LikeDTO like) {
+        return postService.addLike(like.getPostId(), like.getUserId());
+    }
+
+    @PostMapping("/reply/{id}")
+    public void addReply(@PathVariable Long id, @RequestBody Reply reply) {
+        postService.addReply(id, reply);
     }
 }

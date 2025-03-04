@@ -65,7 +65,7 @@ public class UserService implements IUserService {
         if (user.getUsername() != null) userOld.setUsername(user.getUsername());
         if (user.getPosts() != null) userOld.setPosts(user.getPosts());
         if (user.getDescription() != null) userOld.setDescription(user.getDescription());
-        if (user.getFitnessCalendar() != null) userOld.setFitnessCalendar(user.getFitnessCalendar());
+        if (user.getDayInfos() != null) userOld.setDayInfos(user.getDayInfos());
         if (user.getFriends() != null) userOld.setFriends(user.getFriends());
 
         userOld.setUpdateAt(Instant.now());

@@ -16,9 +16,9 @@ public class DayInfo {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "fitness_calendar_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
-    private FitnessCalendar fitnessCalendar;
+    private User user;
 
     private Instant date;
 

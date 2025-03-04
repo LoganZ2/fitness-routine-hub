@@ -4,8 +4,8 @@ import com.MIE350.FitnessRoutineHub.controller.dto.FriendDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
+import com.MIE350.FitnessRoutineHub.model.service.IDayInfoService;
 import com.MIE350.FitnessRoutineHub.model.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +15,12 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
     private final IUserService userService;
+    private final IDayInfoService fitnessCalendarService;
 
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, IDayInfoService fitnessCalendarService) {
         this.userService = userService;
+        this.fitnessCalendarService = fitnessCalendarService;
     }
 
     @GetMapping
@@ -61,4 +62,5 @@ public class UserController {
     List<UserDTO> getFriends(@PathVariable Long id) {
         return userService.getFriends(id);
     }
+
 }

@@ -1,6 +1,5 @@
 package com.MIE350.FitnessRoutineHub.model.service;
 
-import com.MIE350.FitnessRoutineHub.controller.exceptions.DuplicateUsernameException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.PostNotFoundException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
@@ -8,6 +7,7 @@ import com.MIE350.FitnessRoutineHub.model.entity.Post.PostType;
 import com.MIE350.FitnessRoutineHub.model.entity.Reply;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
 import com.MIE350.FitnessRoutineHub.model.repository.PostRepository;
+import com.MIE350.FitnessRoutineHub.model.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,32 +16,34 @@ import java.util.List;
 @Service
 public class PostService implements IPostService {
 
-    private final PostRepository repository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository repository) {
-        this.repository = repository;
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<Post> getPosts() {
-        return repository.findAll();
+        return postRepository.findAll();
     }
 
     @Override
     public List<Post> getPostsByType(PostType type) {
-        return repository.findAllByType(type);
+        return postRepository.findAllByType(type);
     }
 
     @Override
     public Post getPost(Long id) {
-        return repository.findById(id).orElseThrow(PostNotFoundException::new);
+        return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
     @Override
     public Post newPost(Post post) {
         post.setCreatedAt(Instant.now());
         post.setId(null);
-        return repository.save(post);
+        return postRepository.save(post);
     }
 
     @Override
@@ -53,17 +55,18 @@ public class PostService implements IPostService {
         if (post.getReplies() != null) postOld.setReplies(post.getReplies());
         if (post.getLikes() != null) postOld.setLikes(post.getLikes());
         postOld.setUpdateAt(Instant.now());
-        return repository.save(postOld);
+        return postRepository.save(postOld);
     }
 
     @Override
     public void deletePost(Long id) {
-        repository.deleteById(id);
+        postRepository.deleteById(id);
     }
 
     @Override
-    public boolean addLike(Long id, User user) {
+    public boolean addLike(Long id, Long userId) {
         Post post = getPost(id);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         if (post.getLikes().contains(user)) return false;
         post.getLikes().add(user);
         updatePost(post);
