@@ -12,32 +12,51 @@ public class HealthUtils {
     private static final String FOOD_CALORIES_FILE = "C:\Users\jeff\Desktop\Food and Calories - Sheet1.csv"; // CSV 文件路径
     private static final String EXERCISE_BURN_FILE = "C:\Users\jeff\Desktop\exercise_dataset.csv"; // CSV 文件路径
 
-    public static Map<String, Integer> foodCalories() {
-        //TODO
-        //reads from csv files for food calories information
-        return loadCsvData(FOOD_CALORIES_FILE);
-        throw new NotImplementedException();
-    }
-    public static Map<String, Integer> exerciseBurn() {
-        //TODO
-        //reads from csv files or implement a map as code for exercise calories burn
-        return loadCsvData(EXERCISE_BURN_FILE);
-        throw new NotImplementedException();
-    }
+    public static Map<String, Double> loadFoodCalories() {
+        Map<String, Double> foodCaloriesMap = new HashMap<>();
+        Pattern pattern = Pattern.compile("\\((\\d+) g\\)"); // 正则匹配括号内的克数 (xx g)
 
-    private static Map<String, Integer> loadCsvData(String filePath) {
-        Map<String, Integer> dataMap = new HashMap<>();
-        try (CSVParser parser = new CSVParser(new FileReader(filePath), CSVFormat.DEFAULT.withHeader())) {
+        try (CSVParser parser = new CSVParser(new FileReader(FOOD_CALORIES_FILE), CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
             for (CSVRecord record : parser) {
-                String name = record.get(0);
-                Integer calories = Integer.parseInt(record.get(1));
-                dataMap.put(name, calories);
+                String food = record.get("Food").trim();
+                String serving = record.get("Serving").trim();
+                String caloriesText = record.get("Calories").replace(" cal", "").trim();
+
+                // 提取括号中的克数
+                Matcher matcher = pattern.matcher(serving);
+                if (matcher.find()) {
+                    int grams = Integer.parseInt(matcher.group(1)); // 获取括号内的数字 (xx g)
+                    double totalCalories = Double.parseDouble(caloriesText);
+                    
+                    // 计算每克卡路里
+                    double caloriesPerGram = totalCalories / grams;
+                    foodCaloriesMap.put(food, caloriesPerGram);
+                }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error reading CSV file: " + filePath, e);
+            throw new RuntimeException("Error reading food CSV file: " + FOOD_CALORIES_FILE, e);
         }
-        return dataMap;
+        return foodCaloriesMap;
     }
+
+
+    public static Map<String, Double> loadExerciseCaloriesPerKg() {
+        Map<String, Double> exerciseCaloriesMap = new HashMap<>();
+
+        try (CSVParser parser = new CSVParser(new FileReader(EXERCISE_DATASET_FILE), CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
+            for (CSVRecord record : parser) {
+                String exerciseType = record.get(0).trim(); // 第一列：运动类型
+                double caloriesPerKg = Double.parseDouble(record.get(5).trim()); // 第六列：每千克每小时卡路里
+
+                // 存入 Map
+                exerciseCaloriesMap.put(exerciseType, caloriesPerKg);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading exercise CSV file: " + EXERCISE_DATASET_FILE, e);
+        }
+        return exerciseCaloriesMap;
+    }
+
 
     public static int calculateNetCalories(Integer height, Integer weight, Integer age, HealthProfile.Objective objective) {
         List<String> missingFields = new ArrayList<>();
@@ -65,4 +84,73 @@ public class HealthUtils {
                 return bmr + adjustment;
         throw new NotImplementedException();
     }
+
+        /**
+     * 计算用户从食物摄入的卡路里
+     * @param foodName 食物名称
+     * @param grams 食物重量（克）
+     * @return 摄入的卡路里
+     */
+    public static double calculateFoodCalories(String foodName, double grams) {
+        Map<String, Double> foodCaloriesMap = loadFoodCalories(); // 读取食物数据
+
+        if (!foodCaloriesMap.containsKey(foodName)) {
+            throw new IllegalArgumentException("Food not found: " + foodName);
+        }
+
+        double caloriesPerGram = foodCaloriesMap.get(foodName);
+        return caloriesPerGram * grams; // 计算总卡路里
+    }
+
+    /**
+     * 计算用户运动消耗的卡路里
+     * @param exerciseType 运动类型（如 "Running, 6 mph"）
+     * @param weight 体重（kg）
+     * @param duration 运动时间（分钟）
+     * @return 消耗的卡路里
+     */
+    public static double calculateExerciseCalories(String exerciseType, double weight, double duration) {
+        Map<String, Double> exerciseCaloriesMap = loadExerciseCaloriesPerKg(); // 读取运动消耗数据
+
+        if (!exerciseCaloriesMap.containsKey(exerciseType)) {
+            throw new IllegalArgumentException("Exercise type not found: " + exerciseType);
+        }
+
+        double caloriesPerKgPerHour = exerciseCaloriesMap.get(exerciseType);
+        return caloriesPerKgPerHour * weight * (duration / 60.0); // 按小时计算总卡路里消耗
+    }
+
+    /**
+     * 计算用户今日的总卡路里（净卡路里 + 食物摄入 - 运动消耗）
+     * @param height 身高（cm）
+     * @param weight 体重（kg）
+     * @param age 年龄
+     * @param objective 目标（增肌、减脂、维持）
+     * @param foodIntake 食物摄入（Map<食物名称, 克数>）
+     * @param exerciseData 运动数据（Map<运动类型, 运动时间（分钟）>）
+     * @return 今日的总卡路里
+     */
+    public static double calculateTotalCalories(int height, int weight, int age, 
+                                                HealthProfile.Objective objective,
+                                                Map<String, Double> foodIntake, 
+                                                Map<String, Double> exerciseData) {
+        // 计算净卡路里
+        int netCalories = calculateNetCalories(height, weight, age, objective);
+
+        // 计算总食物摄入
+        double totalFoodCalories = 0;
+        for (Map.Entry<String, Double> entry : foodIntake.entrySet()) {
+            totalFoodCalories += calculateFoodCalories(entry.getKey(), entry.getValue());
+        }
+
+        // 计算总运动消耗
+        double totalExerciseCalories = 0;
+        for (Map.Entry<String, Double> entry : exerciseData.entrySet()) {
+            totalExerciseCalories += calculateExerciseCalories(entry.getKey(), weight, entry.getValue());
+        }
+
+        // 计算今日的总卡路里
+        return netCalories + totalFoodCalories - totalExerciseCalories;
+    }
 }
+
