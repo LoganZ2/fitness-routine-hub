@@ -2,33 +2,39 @@ package com.MIE350.FitnessRoutineHub.utils;
 
 import com.MIE350.FitnessRoutineHub.controller.exceptions.MissingRequiredValuesException;
 import com.MIE350.FitnessRoutineHub.model.entity.HealthProfile;
-import org.apache.commons.lang3.NotImplementedException;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HealthUtils {
-    private static final String FOOD_CALORIES_FILE = "C:\Users\jeff\Desktop\Food and Calories - Sheet1.csv"; // CSV 文件路径
-    private static final String EXERCISE_BURN_FILE = "C:\Users\jeff\Desktop\exercise_dataset.csv"; // CSV 文件路径
+    private static final String FOOD_CALORIES_FILE = ""; // CSV 文件路径
+    private static final String EXERCISE_BURN_FILE = ""; // CSV 文件路径
 
     public static Map<String, Double> loadFoodCalories() {
         Map<String, Double> foodCaloriesMap = new HashMap<>();
         Pattern pattern = Pattern.compile("\\((\\d+) g\\)"); // 正则匹配括号内的克数 (xx g)
 
-        try (CSVParser parser = new CSVParser(new FileReader(FOOD_CALORIES_FILE), CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
-            for (CSVRecord record : parser) {
-                String food = record.get("Food").trim();
-                String serving = record.get("Serving").trim();
-                String caloriesText = record.get("Calories").replace(" cal", "").trim();
+        try (BufferedReader br = new BufferedReader(new FileReader(FOOD_CALORIES_FILE))) {
+            String line = br.readLine(); // 读取表头，跳过第一行
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(","); // 按逗号分割
+                if (parts.length < 3) continue; // 确保数据完整
 
-                // 提取括号中的克数
+                String food = parts[0].trim();
+                String serving = parts[1].trim();
+                String caloriesText = parts[2].replace(" cal", "").trim();
+
                 Matcher matcher = pattern.matcher(serving);
                 if (matcher.find()) {
-                    int grams = Integer.parseInt(matcher.group(1)); // 获取括号内的数字 (xx g)
+                    int grams = Integer.parseInt(matcher.group(1)); // 获取括号内的克数 (xx g)
                     double totalCalories = Double.parseDouble(caloriesText);
-                    
-                    // 计算每克卡路里
                     double caloriesPerGram = totalCalories / grams;
                     foodCaloriesMap.put(food, caloriesPerGram);
                 }
@@ -39,23 +45,26 @@ public class HealthUtils {
         return foodCaloriesMap;
     }
 
+        public static Map<String, Double> loadExerciseCaloriesPerKg() {
+            Map<String, Double> exerciseCaloriesMap = new HashMap<>();
 
-    public static Map<String, Double> loadExerciseCaloriesPerKg() {
-        Map<String, Double> exerciseCaloriesMap = new HashMap<>();
+            try (BufferedReader br = new BufferedReader(new FileReader(EXERCISE_BURN_FILE))) {
+                String line = br.readLine(); // 读取表头，跳过第一行
+                while ((line = br.readLine()) != null) {
+                    String[] parts = line.split(","); // 按逗号分割
+                    if (parts.length < 6) continue; // 确保数据完整
 
-        try (CSVParser parser = new CSVParser(new FileReader(EXERCISE_DATASET_FILE), CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
-            for (CSVRecord record : parser) {
-                String exerciseType = record.get(0).trim(); // 第一列：运动类型
-                double caloriesPerKg = Double.parseDouble(record.get(5).trim()); // 第六列：每千克每小时卡路里
+                    String exerciseType = parts[0].trim(); // **第一列：包含运动类型 + 速度**
+                    double caloriesPerKg = Double.parseDouble(parts[5].trim()); // **第六列：每千克每小时卡路里**
 
-                // 存入 Map
-                exerciseCaloriesMap.put(exerciseType, caloriesPerKg);
+                    exerciseCaloriesMap.put(exerciseType, caloriesPerKg);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading exercise CSV file: " + EXERCISE_BURN_FILE, e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading exercise CSV file: " + EXERCISE_DATASET_FILE, e);
+            return exerciseCaloriesMap;
         }
-        return exerciseCaloriesMap;
-    }
+
 
 
     public static int calculateNetCalories(Integer height, Integer weight, Integer age, HealthProfile.Objective objective) {
@@ -75,14 +84,25 @@ public class HealthUtils {
                 // 使用通用 BMR 计算公式（男女公式的平均值）
                 int bmr = (int) (10 * weight + 6.25 * height - 5 * age - 78);
                 // 目标调整
-                int adjustment = switch (objective) {
-                    case LOSE_WEIGHT -> -500; // 目标减脂，每日减少 500 卡
-                    case GAIN_MUSCLE -> 500;  // 目标增肌，每日增加 500 卡
-                    case MAINTAIN -> 0;       // 目标维持体重
-                };
-        
-                return bmr + adjustment;
-        throw new NotImplementedException();
+        int adjustment;
+        switch (objective) {
+            case CUT:
+                adjustment = -500;
+                break;
+            // 目标减脂，每日减少 500 卡
+            case BULK:
+                adjustment = 500;
+                break;
+            // 目标增肌，每日增加 500 卡
+            case MAINTAIN:
+                adjustment = 0;
+                break;       // 目标维持体重
+
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        return bmr + adjustment;
     }
 
         /**
