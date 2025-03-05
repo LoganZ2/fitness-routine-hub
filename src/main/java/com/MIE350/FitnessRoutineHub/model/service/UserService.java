@@ -43,6 +43,11 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
+    public UserDTO findUserByName(String name) {
+        User user = userRepository.findFirstByUsername(name);
+        return new UserDTO(user);
+    }
+
     @Override
     public User newUser(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {

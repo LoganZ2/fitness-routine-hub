@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -24,8 +25,6 @@ public class DayInfo {
 
     private Boolean challengeCompleted;
 
-    private Integer caloriesIntake;
-
-    private Integer caloriesBurn;
+    private Double netCalories;
 
 }

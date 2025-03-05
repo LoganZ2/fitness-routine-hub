@@ -1,5 +1,6 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.DayCaloriesDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.DayInfo;
 import com.MIE350.FitnessRoutineHub.model.service.IDayInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class DayInfoController {
     }
 
     @GetMapping("/{id}/challenge")
-    public Boolean checkChallengeCompletion(@PathVariable Long id, @RequestParam Instant date) {
-        return dayInfoService.checkChallengeCompletion(id, date);
+    public Boolean checkChallengeCompletion(@PathVariable Long id, @RequestBody DayCaloriesDTO dayCalories) {
+        return dayInfoService.checkChallengeCompletion(id, dayCalories);
     }
 
     @PutMapping("/{id}")

@@ -22,7 +22,7 @@ public class HealthUtils {
         Pattern pattern = Pattern.compile("\\((\\d+) g\\)");
 
         try (BufferedReader br = new BufferedReader(new FileReader(FOOD_CALORIES_FILE))) {
-            String line = br.readLine();
+            String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length < 3) continue;
@@ -78,7 +78,7 @@ public class HealthUtils {
         if (!missingFields.isEmpty()) {
             throw new MissingRequiredValuesException(missingFields.toArray(new String[0]));
         }
-                int bmr = (int) (10 * weight + 6.25 * height - 5 * age - 78);
+        int bmr = (int) (10 * weight + 6.25 * height - 5 * age - 78);
         int adjustment;
         switch (objective) {
             case CUT:
@@ -94,6 +94,7 @@ public class HealthUtils {
                 throw new IllegalArgumentException();
         }
 
+        int netCalories = bmr + adjustment;
         return bmr + adjustment;
     }
 
@@ -119,12 +120,9 @@ public class HealthUtils {
         return caloriesPerKgPerHour * weight * (duration / 60.0);
     }
 
-    public static double calculateTotalCalories(int height, int weight, int age, 
-                                                HealthProfile.Objective objective,
-                                                Map<String, Double> foodIntake, 
+    public static double calculateTotalCalories(int weight,
+                                                Map<String, Double> foodIntake,
                                                 Map<String, Double> exerciseData) {
-        int netCalories = calculateNetCalories(height, weight, age, objective);
-
         double totalFoodCalories = 0;
         for (Map.Entry<String, Double> entry : foodIntake.entrySet()) {
             totalFoodCalories += calculateFoodCalories(entry.getKey(), entry.getValue());
@@ -135,7 +133,7 @@ public class HealthUtils {
             totalExerciseCalories += calculateExerciseCalories(entry.getKey(), weight, entry.getValue());
         }
 
-        return netCalories + totalFoodCalories - totalExerciseCalories;
+        return totalFoodCalories - totalExerciseCalories;
     }
 }
 

@@ -13,12 +13,12 @@ import java.util.Map;
 @RequestMapping("/calories-info")
 public class CaloriesInfoController {
     @GetMapping("/food-cal")
-    public Map<String, Integer> getFoodCalories() {
-        return HealthUtils.foodCalories();
+    public Map<String, Double> getFoodCaloriesList() {
+        return HealthUtils.loadFoodCalories();
     }
 
     @GetMapping("/exercise-cal")
-    public Map<String, Integer> getExerciseBurn() {
-        return HealthUtils.exerciseBurn();
+    public Map<String, Double> getExerciseBurnList() {
+        return HealthUtils.loadExerciseCaloriesPerKg();
     }
 }

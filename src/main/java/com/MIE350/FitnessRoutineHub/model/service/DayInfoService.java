@@ -1,5 +1,6 @@
 package com.MIE350.FitnessRoutineHub.model.service;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.DayCaloriesDTO;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.MissingDayInfoException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
 import com.MIE350.FitnessRoutineHub.model.entity.DayInfo;
@@ -28,14 +29,16 @@ public class DayInfoService implements IDayInfoService {
     }
 
     @Override
-    public Boolean checkChallengeCompletion(Long id, Instant date) {
+    public Boolean checkChallengeCompletion(Long id, DayCaloriesDTO dayCaloriesDTO) {
         final int threshold = 100;
+        Instant date = dayCaloriesDTO.getDate();
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         List<DayInfo> dayInfoList = user.getDayInfos();
         HealthProfile hp = user.getHealthProfile();
         DayInfo dayInfo = dayInfoList.stream().filter(d -> d.getDate().equals(date)).findFirst().orElseThrow(MissingDayInfoException::new);
-        int netCalories = dayInfo.getCaloriesIntake() - dayInfo.getCaloriesBurn();
-        int netCaloriesRequirement = HealthUtils.calculateNetCalories(hp.getHeight(), hp.getWeight(), hp.getAge(), hp.getObjective());
+        double netCalories = HealthUtils.calculateTotalCalories(hp.getWeight(), dayCaloriesDTO.getFoodIntake(), dayCaloriesDTO.getExerciseData());
+        dayInfo.setNetCalories(netCalories);
+        double netCaloriesRequirement = HealthUtils.calculateNetCalories(hp.getHeight(), hp.getWeight(), hp.getAge(), hp.getObjective());
         if (Math.abs(netCalories - netCaloriesRequirement) >= threshold) {
             dayInfo.setChallengeCompleted(false);
         } else {
@@ -58,8 +61,7 @@ public class DayInfoService implements IDayInfoService {
             DayInfo di = dayInfoOld.get();
             if (dayInfo.getDate() != null) di.setDate(dayInfo.getDate());
             if (dayInfo.getChallengeCompleted() != null) di.setChallengeCompleted(dayInfo.getChallengeCompleted());
-            if (dayInfo.getCaloriesIntake() != null) di.setCaloriesIntake(dayInfo.getCaloriesIntake());
-            if (dayInfo.getCaloriesBurn() != null) di.setCaloriesBurn(dayInfo.getCaloriesBurn());
+            if (dayInfo.getNetCalories() != null) di.setNetCalories(dayInfo.getNetCalories());
             userRepository.save(user);
             return di;
         }

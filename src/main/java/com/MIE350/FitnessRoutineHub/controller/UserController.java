@@ -38,6 +38,11 @@ public class UserController {
         return userService.getUser(id);
     }
 
+    @PostMapping("/login")
+    UserDTO login(@RequestParam String username) {
+        return userService.findUserByName(username);
+    }
+
     @PatchMapping
     User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
