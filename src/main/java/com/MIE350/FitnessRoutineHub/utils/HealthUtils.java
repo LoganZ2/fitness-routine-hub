@@ -14,8 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HealthUtils {
-    private static final String FOOD_CALORIES_FILE = ""; // CSV 文件路径
-    private static final String EXERCISE_BURN_FILE = ""; // CSV 文件路径
+    private static final String FOOD_CALORIES_FILE = "src/main/resources/Food and Calories - Sheet1.csv"; // CSV 文件路径
+    private static final String EXERCISE_BURN_FILE = "src/main/resources/exercise_dataset (1).csv"; // CSV 文件路径
 
     public static Map<String, Double> loadFoodCalories() {
         Map<String, Double> foodCaloriesMap = new HashMap<>();
