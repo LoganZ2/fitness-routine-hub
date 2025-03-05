@@ -1,6 +1,6 @@
 package com.MIE350.FitnessRoutineHub.controller.dto;
 
-import com.MIE350.FitnessRoutineHub.model.entity.FitnessCalendar;
+import com.MIE350.FitnessRoutineHub.model.entity.DayInfo;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
 
 import com.MIE350.FitnessRoutineHub.model.entity.User;
@@ -21,7 +21,7 @@ public class UserDTO {
     private String description;
     private List<Post> posts;
     private Set<Long> friends;
-    private FitnessCalendar fitnessCalendar;
+    private List<DayInfo> dayInfos;
     private Instant createdAt;
     private Instant updateAt;
     public UserDTO(User user) {
@@ -30,7 +30,7 @@ public class UserDTO {
         this.description = user.getDescription();
         this.posts = user.getPosts();
         this.friends = user.getFriendsLong();
-        this.fitnessCalendar = user.getFitnessCalendar();
+        this.dayInfos = user.getDayInfos();
         this.createdAt = user.getCreatedAt();
         this.updateAt = user.getUpdateAt();
     }
