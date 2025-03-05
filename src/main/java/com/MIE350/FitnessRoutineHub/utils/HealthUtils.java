@@ -98,25 +98,25 @@ public class HealthUtils {
     }
 
     public static double calculateFoodCalories(String foodName, double grams) {
-        Map<String, Double> foodCaloriesMap = loadFoodCalories(); // 读取食物数据
+        Map<String, Double> foodCaloriesMap = loadFoodCalories();
 
         if (!foodCaloriesMap.containsKey(foodName)) {
             throw new IllegalArgumentException("Food not found: " + foodName);
         }
 
         double caloriesPerGram = foodCaloriesMap.get(foodName);
-        return caloriesPerGram * grams; // 计算总卡路里
+        return caloriesPerGram * grams;
     }
 
     public static double calculateExerciseCalories(String exerciseType, double weight, double duration) {
-        Map<String, Double> exerciseCaloriesMap = loadExerciseCaloriesPerKg(); // 读取运动消耗数据
+        Map<String, Double> exerciseCaloriesMap = loadExerciseCaloriesPerKg();
 
         if (!exerciseCaloriesMap.containsKey(exerciseType)) {
             throw new IllegalArgumentException("Exercise type not found: " + exerciseType);
         }
 
         double caloriesPerKgPerHour = exerciseCaloriesMap.get(exerciseType);
-        return caloriesPerKgPerHour * weight * (duration / 60.0); // 按小时计算总卡路里消耗
+        return caloriesPerKgPerHour * weight * (duration / 60.0);
     }
 
     public static double calculateTotalCalories(int height, int weight, int age, 
