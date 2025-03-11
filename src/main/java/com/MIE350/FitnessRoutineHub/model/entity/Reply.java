@@ -1,5 +1,7 @@
 package com.MIE350.FitnessRoutineHub.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +17,7 @@ public class Reply {
     private ReplyId replyId;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "post_id", insertable = false, updatable = false)
     private Post post;
 

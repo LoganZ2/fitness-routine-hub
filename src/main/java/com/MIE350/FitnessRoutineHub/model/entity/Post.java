@@ -1,6 +1,7 @@
 package com.MIE350.FitnessRoutineHub.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +43,7 @@ public class Post {
     @OneToMany
     private List<User> likes;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "post")
     private List<Reply> replies;
 
