@@ -45,6 +45,7 @@ public class UserService implements IUserService {
 
     public UserDTO findUserByName(String name) {
         User user = userRepository.findFirstByUsername(name);
+        if (user == null) throw new UserNotFoundException();
         return new UserDTO(user);
     }
 
@@ -72,6 +73,7 @@ public class UserService implements IUserService {
         if (user.getDescription() != null) userOld.setDescription(user.getDescription());
         if (user.getDayInfos() != null) userOld.setDayInfos(user.getDayInfos());
         if (user.getFriends() != null) userOld.setFriends(user.getFriends());
+        if (user.getHealthProfile() != null) userOld.setHealthProfile(user.getHealthProfile());
 
         userOld.setUpdateAt(Instant.now());
         return userRepository.save(userOld);

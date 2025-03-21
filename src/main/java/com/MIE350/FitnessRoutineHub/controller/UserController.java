@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    UserDTO login(@RequestParam String username) {
+    UserDTO login(@RequestBody String username) {
         return userService.findUserByName(username);
     }
 

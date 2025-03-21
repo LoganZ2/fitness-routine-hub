@@ -1,6 +1,8 @@
 package com.MIE350.FitnessRoutineHub.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +43,7 @@ public class Post {
     private String body;
 
     @OneToMany
+    @JsonIgnore
     private List<User> likes;
 
     @JsonManagedReference
