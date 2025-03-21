@@ -2,6 +2,7 @@ package com.MIE350.FitnessRoutineHub.controller;
 
 import com.MIE350.FitnessRoutineHub.controller.dto.FriendDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
+import com.MIE350.FitnessRoutineHub.controller.dto.UsernameDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
 import com.MIE350.FitnessRoutineHub.model.service.IDayInfoService;
@@ -39,8 +40,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    UserDTO login(@RequestBody String username) {
-        return userService.findUserByName(username);
+    UserDTO login(@RequestBody UsernameDTO username) {
+        System.out.println(username.getUsername());
+        return userService.findUserByName(username.getUsername());
     }
 
     @PatchMapping

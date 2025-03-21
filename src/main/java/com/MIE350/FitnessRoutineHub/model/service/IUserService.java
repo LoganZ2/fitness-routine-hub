@@ -10,7 +10,7 @@ import java.util.List;
 public interface IUserService {
     List<UsersDTO> getUsers();
     UserDTO getUser(Long id);
-    public UserDTO findUserByName(String name);
+    UserDTO findUserByName(String name);
     User newUser(User user);
     User updateUser(User user);
     void deleteUser(Long id);

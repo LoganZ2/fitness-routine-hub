@@ -43,9 +43,9 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
+    @Override
     public UserDTO findUserByName(String name) {
-        User user = userRepository.findFirstByUsername(name);
-        if (user == null) throw new UserNotFoundException();
+        User user = userRepository.findByUsername(name).orElseThrow(UserNotFoundException::new);
         return new UserDTO(user);
     }
 
