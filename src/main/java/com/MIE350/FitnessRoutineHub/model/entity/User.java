@@ -60,7 +60,7 @@ public class User {
         friend.friends.remove(this);
     }
 
-    @OneToOne
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private HealthProfile healthProfile;
 

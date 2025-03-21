@@ -1,12 +1,12 @@
 -- 插入 Users 表数据
-INSERT INTO Users (id, username, description, created_at, update_at)
-VALUES (1, 'john_doe', 'Fitness enthusiast', '2023-03-15T08:00:00Z', '2023-03-16T08:00:00Z');
+INSERT INTO Users (username, description, created_at, update_at)
+VALUES ('john_doe', 'Fitness enthusiast', '2023-03-15T08:00:00Z', '2023-03-16T08:00:00Z');
 
-INSERT INTO Users (id, username, description, created_at, update_at)
-VALUES (2, 'jane_smith', 'Yoga lover', '2023-03-15T09:00:00Z', NULL);
+INSERT INTO Users (username, description, created_at, update_at)
+VALUES ('jane_smith', 'Yoga lover', '2023-03-15T09:00:00Z', NULL);
 
-INSERT INTO Users (id, username, description, created_at, update_at)
-VALUES (3, 'alex_lee', 'Runner and cyclist', '2023-03-15T10:00:00Z', '2023-03-16T10:00:00Z');
+INSERT INTO Users (username, description, created_at, update_at)
+VALUES ('alex_lee', 'Runner and cyclist', '2023-03-15T10:00:00Z', '2023-03-16T10:00:00Z');
 
 -- 插入 health_profile 表数据（使用 ordinal 值存储枚举）
 -- Gender: MALE=0, FEMALE=1, OTHER=2
