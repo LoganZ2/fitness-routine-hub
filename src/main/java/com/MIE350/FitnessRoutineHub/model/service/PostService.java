@@ -74,8 +74,12 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public void addReply(Long id, Reply reply) {
+    public void addReply(Long id, String content) {
         Post post = getPost(id);
+        Reply reply = new Reply();
+        reply.setContent(content);
+        reply.setCreatedAt(Instant.now());
+        reply.setPost(post);
         post.getReplies().add(reply);
         updatePost(post);
     }

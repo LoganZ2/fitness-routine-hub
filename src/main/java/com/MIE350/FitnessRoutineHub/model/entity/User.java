@@ -38,7 +38,6 @@ public class User {
     private String description;
 
     @OneToMany(mappedBy = "user")
-    @JsonManagedReference
     private List<Post> posts;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

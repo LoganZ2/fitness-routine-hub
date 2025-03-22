@@ -13,12 +13,12 @@ import java.time.Instant;
 @Table(name = "Replies")
 public class Reply {
 
-    @EmbeddedId
-    private ReplyId replyId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "post_id", insertable = false, updatable = false)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @NotNull

@@ -33,7 +33,6 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
     private User user;
 
     @Column(nullable = false)
@@ -44,11 +43,9 @@ public class Post {
     private String body;
 
     @OneToMany
-    @JsonIgnore
     private List<User> likes;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Reply> replies;
 
     @NotNull

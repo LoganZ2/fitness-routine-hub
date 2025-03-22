@@ -1,6 +1,7 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
 import com.MIE350.FitnessRoutineHub.controller.dto.LikeDTO;
+import com.MIE350.FitnessRoutineHub.controller.dto.ReplyDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
 import com.MIE350.FitnessRoutineHub.model.entity.Post.PostType;
 import com.MIE350.FitnessRoutineHub.model.entity.Reply;
@@ -53,8 +54,9 @@ public class PostController {
         return postService.addLike(like.getPostId(), like.getUserId());
     }
 
-    @PostMapping("/reply/{id}")
-    public void addReply(@PathVariable Long id, @RequestBody Reply reply) {
-        postService.addReply(id, reply);
+    @PostMapping("/reply")
+    public String addReply(@RequestBody ReplyDTO replyDTO) {
+        postService.addReply(replyDTO.getPostId(), replyDTO.getContent());
+        return "done";
     }
 }

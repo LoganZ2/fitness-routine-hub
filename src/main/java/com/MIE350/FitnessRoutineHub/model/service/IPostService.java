@@ -15,5 +15,5 @@ public interface IPostService {
     Post updatePost(Post post);
     void deletePost(Long id);
     boolean addLike(Long id, Long userId);
-    void addReply(Long id, Reply reply);
+    void addReply(Long id, String content);
 }
