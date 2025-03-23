@@ -1,5 +1,6 @@
 package com.MIE350.FitnessRoutineHub.model.service;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.PostDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.PostsDTO;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.PostNotFoundException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
@@ -43,8 +44,8 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+    public PostDTO getPost(Long id) {
+        return new PostDTO(postRepository.findById(id).orElseThrow(PostNotFoundException::new));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class PostService implements IPostService {
 
     @Override
     public Post updatePost(Post post) {
-        Post postOld = getPost(post.getId());
+        Post postOld = postRepository.findById(post.getId()).orElseThrow(PostNotFoundException::new);
         if (post.getTitle() != null) postOld.setTitle(post.getTitle());
         if (post.getType() != null) postOld.setType(post.getType());
         if (post.getBody() != null) postOld.setBody(post.getBody());
@@ -73,7 +74,7 @@ public class PostService implements IPostService {
 
     @Override
     public boolean addLike(Long id, Long userId) {
-        Post post = getPost(id);
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         if (post.getLikes().contains(user)) return false;
         post.getLikes().add(user);
@@ -83,7 +84,7 @@ public class PostService implements IPostService {
 
     @Override
     public void addReply(Long id, String content) {
-        Post post = getPost(id);
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         Reply reply = new Reply();
         reply.setContent(content);
         reply.setCreatedAt(Instant.now());

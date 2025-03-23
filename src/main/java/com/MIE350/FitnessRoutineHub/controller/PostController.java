@@ -1,6 +1,7 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
 import com.MIE350.FitnessRoutineHub.controller.dto.LikeDTO;
+import com.MIE350.FitnessRoutineHub.controller.dto.PostDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.PostsDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.ReplyDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
@@ -32,7 +33,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public Post getPost(@PathVariable Long id) {
+    public PostDTO getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 
