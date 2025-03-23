@@ -14,7 +14,8 @@ public interface IUserService {
     User newUser(User user);
     User updateUser(User user);
     void deleteUser(Long id);
-    void addFriend(Long id, Long friendId);
-    void removeFriend(Long id, Long friendId);
-    List<UserDTO> getFriends(Long id);
+    void follow(Long id, Long followingId);
+    void unfollow(Long id, Long followingId);
+    List<UserDTO> getFollowings(Long id);
+    List<UserDTO> getFollowers(Long id);
 }

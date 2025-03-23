@@ -2,15 +2,13 @@ package com.MIE350.FitnessRoutineHub.model.service;
 
 import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
-import com.MIE350.FitnessRoutineHub.controller.exceptions.AlreadyFriendsException;
+import com.MIE350.FitnessRoutineHub.controller.exceptions.AlreadyFollowedException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.DuplicateUsernameException;
-import com.MIE350.FitnessRoutineHub.controller.exceptions.PostNotFoundException;
+import com.MIE350.FitnessRoutineHub.controller.exceptions.NotFollowedException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
-import com.MIE350.FitnessRoutineHub.model.entity.Post;
 import com.MIE350.FitnessRoutineHub.model.entity.User;
 import com.MIE350.FitnessRoutineHub.model.repository.PostRepository;
 import com.MIE350.FitnessRoutineHub.model.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -72,7 +70,8 @@ public class UserService implements IUserService {
         if (user.getPosts() != null) userOld.setPosts(user.getPosts());
         if (user.getDescription() != null) userOld.setDescription(user.getDescription());
         if (user.getDayInfos() != null) userOld.setDayInfos(user.getDayInfos());
-        if (user.getFriends() != null) userOld.setFriends(user.getFriends());
+        if (user.getFollowers() != null) userOld.setFollowers(user.getFollowers());
+        if (user.getFollowings() != null) userOld.setFollowings(user.getFollowings());
         if (user.getHealthProfile() != null) userOld.setHealthProfile(user.getHealthProfile());
 
         userOld.setUpdateAt(Instant.now());
@@ -85,28 +84,41 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void addFriend(Long id, Long friendId) {
+    public void follow(Long id, Long followingId) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        User friend = userRepository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
-        if (user.getFriendsLong().contains(friendId)) {
-            throw new AlreadyFriendsException();
+        User following = userRepository.findById(followingId).orElseThrow(() -> new UserNotFoundException());
+        if (user.getFollowingsLong().contains(followingId)) {
+            throw new AlreadyFollowedException();
         }
-        user.addFriend(friend);
+        user.getFollowings().add(following);
+        following.getFollowers().add(user);
+        updateUser(following);
         updateUser(user);
     }
 
     @Override
-    public void removeFriend(Long id, Long friendId) {
+    public void unfollow(Long id, Long followingId) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        User friend = userRepository.findById(friendId).orElseThrow(() -> new UserNotFoundException("Friend not found"));
-        user.removeFriend(friend);
+        User following = userRepository.findById(followingId).orElseThrow(() -> new UserNotFoundException());
+        if (!user.getFollowingsLong().contains(followingId)) {
+            throw new NotFollowedException();
+        }
+        user.getFollowings().remove(following);
+        following.getFollowers().remove(user);
+        updateUser(following);
         updateUser(user);
     }
 
     @Override
-    public List<UserDTO> getFriends(Long id) {
+    public List<UserDTO> getFollowings(Long id) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return userRepository.findAllById(user.getFriendsLong()).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
+        return userRepository.findAllById(user.getFollowingsLong()).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDTO> getFollowers(Long id) {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return userRepository.findAllById(user.getFollowersLong()).stream().map(u -> new UserDTO(u)).collect(Collectors.toList());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.MIE350.FitnessRoutineHub.model.service;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.PostsDTO;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.PostNotFoundException;
 import com.MIE350.FitnessRoutineHub.controller.exceptions.UserNotFoundException;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService implements IPostService {
@@ -25,13 +27,19 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public List<Post> getPosts() {
-        return postRepository.findAll();
+    public List<PostsDTO> getPosts() {
+        return postRepository.findAll()
+                .stream()
+                .map(post -> new PostsDTO(post))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Post> getPostsByType(PostType type) {
-        return postRepository.findAllByType(type);
+    public List<PostsDTO> getPostsByType(PostType type) {
+        return postRepository.findAllByType(type)
+                .stream()
+                .map(post -> new PostsDTO(post))
+                .collect(Collectors.toList());
     }
 
     @Override

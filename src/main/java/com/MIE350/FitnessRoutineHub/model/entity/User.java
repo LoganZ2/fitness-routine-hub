@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
@@ -21,10 +22,8 @@ import java.util.stream.Collectors;
 @Setter
 @EqualsAndHashCode
 @Table(name = "Users")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id"
-)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityReference(alwaysAsId = true)
 public class User {
 
     @Id
@@ -42,27 +41,30 @@ public class User {
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
-            name = "friendships",
+            name = "followers",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id")
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
     )
-    private Set<User> friends = new HashSet<>();
+    private Set<User> followers = new HashSet<>();
 
-    public Set<Long> getFriendsLong() {
-        return this.friends
-                .stream()
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(
+            name = "followings",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
+    private Set<User> followings = new HashSet<>();
+
+    public Set<Long> getFollowersLong() {
+        return this.followers.stream()
                 .map(User::getId)
                 .collect(Collectors.toSet());
     }
 
-    public void addFriend(User friend) {
-        this.friends.add(friend);
-        friend.friends.add(this);
-    }
-
-    public void removeFriend(User friend) {
-        this.friends.remove(friend);
-        friend.friends.remove(this);
+    public Set<Long> getFollowingsLong() {
+        return this.followings.stream()
+                .map(User::getId)
+                .collect(Collectors.toSet());
     }
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

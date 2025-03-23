@@ -1,6 +1,7 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
 import com.MIE350.FitnessRoutineHub.controller.dto.LikeDTO;
+import com.MIE350.FitnessRoutineHub.controller.dto.PostsDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.ReplyDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
 import com.MIE350.FitnessRoutineHub.model.entity.Post.PostType;
@@ -10,6 +11,7 @@ import com.MIE350.FitnessRoutineHub.model.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -25,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getPosts(@RequestParam(required = false) PostType type) {
+    public List<PostsDTO> getPosts(@RequestParam(required = false) PostType type) {
         return (type == null) ? postService.getPosts() : postService.getPostsByType(type);
     }
 
@@ -55,8 +57,8 @@ public class PostController {
     }
 
     @PostMapping("/reply")
-    public String addReply(@RequestBody ReplyDTO replyDTO) {
+    public void addReply(@RequestBody ReplyDTO replyDTO) {
         postService.addReply(replyDTO.getPostId(), replyDTO.getContent());
-        return "done";
     }
+
 }

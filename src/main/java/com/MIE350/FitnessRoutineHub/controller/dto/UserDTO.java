@@ -21,7 +21,8 @@ public class UserDTO {
     private String username;
     private String description;
     private List<Post> posts;
-    private Set<Long> friends;
+    private Set<Long> followings;
+    private Set<Long> followers;
     private List<DayInfo> dayInfos;
     private Instant createdAt;
     private Instant updateAt;
@@ -31,7 +32,8 @@ public class UserDTO {
         this.username = user.getUsername();
         this.description = user.getDescription();
         this.posts = user.getPosts();
-        this.friends = user.getFriendsLong();
+        this.followings = user.getFollowingsLong();
+        this.followers = user.getFollowersLong();
         this.dayInfos = user.getDayInfos();
         this.createdAt = user.getCreatedAt();
         this.updateAt = user.getUpdateAt();

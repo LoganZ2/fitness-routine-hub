@@ -1,15 +1,14 @@
 package com.MIE350.FitnessRoutineHub.model.service;
 
+import com.MIE350.FitnessRoutineHub.controller.dto.PostsDTO;
 import com.MIE350.FitnessRoutineHub.model.entity.Post;
 import com.MIE350.FitnessRoutineHub.model.entity.Post.PostType;
-import com.MIE350.FitnessRoutineHub.model.entity.Reply;
-import com.MIE350.FitnessRoutineHub.model.entity.User;
 
 import java.util.List;
 
 public interface IPostService {
-    List<Post> getPosts();
-    List<Post> getPostsByType(PostType type);
+    List<PostsDTO> getPosts();
+    List<PostsDTO> getPostsByType(PostType type);
     Post getPost(Long id);
     Post newPost(Post post);
     Post updatePost(Post post);

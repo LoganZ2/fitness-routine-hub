@@ -13,10 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "Posts")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id"
-)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityReference(alwaysAsId = true)
 public class Post {
 
     public enum PostType {

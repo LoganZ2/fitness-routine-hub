@@ -55,19 +55,24 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PatchMapping("/add-friend")
-    void addFriend (@RequestBody FriendDTO friendDTO) {
-        userService.addFriend(friendDTO.getId(), friendDTO.getFriendId());
+    @PatchMapping("/follow")
+    void follow (@RequestBody FriendDTO friendDTO) {
+        userService.follow(friendDTO.getId(), friendDTO.getFriendId());
     }
 
-    @PatchMapping("/remove-friend")
-    void removeFriend (@RequestBody FriendDTO friendDTO) {
-        userService.removeFriend(friendDTO.getId(), friendDTO.getFriendId());
+    @PatchMapping("/unfollow")
+    void unfollow (@RequestBody FriendDTO friendDTO) {
+        userService.unfollow(friendDTO.getId(), friendDTO.getFriendId());
     }
 
-    @GetMapping("/friends/{id}")
-    List<UserDTO> getFriends(@PathVariable Long id) {
-        return userService.getFriends(id);
+    @GetMapping("/followers/{id}")
+    List<UserDTO> getFollowers(@PathVariable Long id) {
+        return userService.getFollowers(id);
+    }
+
+    @GetMapping("/followings/{id}")
+    List<UserDTO> getFollowings(@PathVariable Long id) {
+        return userService.getFollowings(id);
     }
 
 }

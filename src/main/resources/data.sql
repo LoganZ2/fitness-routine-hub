@@ -44,22 +44,19 @@ INSERT INTO Posts (id, user_id, title, type, body, created_at, update_at)
 VALUES (3, 3, 'Running Schedule', 1, 'What is the best running schedule?', '2023-03-15T10:30:00Z', '2023-03-15T11:00:00Z');
 
 -- 插入 Replies 表数据
-INSERT INTO Replies (post_id, content, likes, created_at)
-VALUES (1, 'Great start!', 5, '2023-03-15T09:10:00Z');
+INSERT INTO Replies (post_id, content, created_at)
+VALUES (1, 'Great start!',  '2023-03-15T09:10:00Z');
 
-INSERT INTO Replies (post_id, content, likes, created_at)
-VALUES (1, 'Keep it up!', 3, '2023-03-15T09:20:00Z');
+INSERT INTO Replies (post_id, content, created_at)
+VALUES (1, 'Keep it up!', '2023-03-15T09:20:00Z');
 
-INSERT INTO Replies (post_id, content, likes, created_at)
-VALUES (2, 'Thanks for the tips!', 4, '2023-03-15T09:40:00Z');
+INSERT INTO Replies (post_id, content, created_at)
+VALUES (2, 'Thanks for the tips!', '2023-03-15T09:40:00Z');
 
-INSERT INTO Replies (post_id, content, likes, created_at)
-VALUES (3, 'I follow a similar schedule.', 2, '2023-03-15T11:10:00Z');
+INSERT INTO Replies (post_id, content, created_at)
+VALUES (3, 'I follow a similar schedule.', '2023-03-15T11:10:00Z');
 
-INSERT INTO Replies (post_id, content, likes, created_at)
-VALUES (3, 'Maybe try interval training?', 6, '2023-03-15T11:20:00Z');
+INSERT INTO Replies (post_id, content, created_at)
+VALUES (3, 'Maybe try interval training?', '2023-03-15T11:20:00Z');
 
--- 插入 friendships 表数据（多对多关系）
-INSERT INTO friendships (user_id, friend_id) VALUES (1, 2);
-INSERT INTO friendships (user_id, friend_id) VALUES (1, 3);
-INSERT INTO friendships (user_id, friend_id) VALUES (2, 3);
+
