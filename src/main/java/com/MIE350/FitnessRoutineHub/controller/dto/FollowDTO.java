@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class FriendDTO {
+public class FollowDTO {
     private Long id;
-    private Long friendId;
+    private Long followingId;
 }

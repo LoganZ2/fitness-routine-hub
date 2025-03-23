@@ -14,6 +14,7 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,5 +80,10 @@ public class User {
     private Instant createdAt;
 
     private Instant updateAt;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }

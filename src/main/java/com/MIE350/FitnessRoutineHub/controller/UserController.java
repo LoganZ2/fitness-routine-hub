@@ -1,6 +1,6 @@
 package com.MIE350.FitnessRoutineHub.controller;
 
-import com.MIE350.FitnessRoutineHub.controller.dto.FriendDTO;
+import com.MIE350.FitnessRoutineHub.controller.dto.FollowDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UserDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsernameDTO;
 import com.MIE350.FitnessRoutineHub.controller.dto.UsersDTO;
@@ -56,13 +56,13 @@ public class UserController {
     }
 
     @PatchMapping("/follow")
-    void follow (@RequestBody FriendDTO friendDTO) {
-        userService.follow(friendDTO.getId(), friendDTO.getFriendId());
+    void follow (@RequestBody FollowDTO followDTO) {
+        userService.follow(followDTO.getId(), followDTO.getFollowingId());
     }
 
     @PatchMapping("/unfollow")
-    void unfollow (@RequestBody FriendDTO friendDTO) {
-        userService.unfollow(friendDTO.getId(), friendDTO.getFriendId());
+    void unfollow (@RequestBody FollowDTO friendDTO) {
+        userService.unfollow(friendDTO.getId(), friendDTO.getFollowingId());
     }
 
     @GetMapping("/followers/{id}")
