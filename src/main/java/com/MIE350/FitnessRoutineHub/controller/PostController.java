@@ -11,6 +11,7 @@ import com.MIE350.FitnessRoutineHub.model.service.IPostService;
 import com.MIE350.FitnessRoutineHub.model.service.IUserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,11 @@ public class PostController {
     }
 
     @PostMapping("/reply")
-    public void addReply(@RequestBody ReplyDTO replyDTO) {
+    public Map<String, Object> addReply(@RequestBody ReplyDTO replyDTO) {
         postService.addReply(replyDTO.getPostId(), replyDTO.getContent());
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "done");
+        return response;
     }
 
 }
