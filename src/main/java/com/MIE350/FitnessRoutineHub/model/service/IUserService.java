@@ -11,8 +11,8 @@ public interface IUserService {
     List<UsersDTO> getUsers();
     UserDTO getUser(Long id);
     UserDTO findUserByName(String name);
-    User newUser(User user);
-    User updateUser(User user);
+    UserDTO newUser(User user);
+    UserDTO updateUser(User user);
     void deleteUser(Long id);
     void follow(Long id, Long followingId);
     void unfollow(Long id, Long followingId);

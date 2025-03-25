@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
 @Table(name = "Users")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @JsonIdentityReference(alwaysAsId = true)

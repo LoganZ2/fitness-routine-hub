@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping
-    User newUser(@RequestBody User user) {
+    UserDTO newUser(@RequestBody User user) {
         return userService.newUser(user);
     }
 
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PatchMapping
-    User updateUser(@RequestBody User user) {
+    UserDTO updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
 

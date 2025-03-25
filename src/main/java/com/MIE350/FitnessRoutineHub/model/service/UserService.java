@@ -48,17 +48,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User newUser(User user) {
+    public UserDTO newUser(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new DuplicateUsernameException();
         }
         user.setCreatedAt(Instant.now());
         user.setId(null);
-        return userRepository.save(user);
+        return new UserDTO(userRepository.save(user));
     }
 
     @Override
-    public User updateUser(User user) {
+    public UserDTO updateUser(User user) {
         User userOld = userRepository.findById(user.getId())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -75,7 +75,7 @@ public class UserService implements IUserService {
         if (user.getHealthProfile() != null) userOld.setHealthProfile(user.getHealthProfile());
 
         userOld.setUpdateAt(Instant.now());
-        return userRepository.save(userOld);
+        return new UserDTO(userRepository.save(userOld));
     }
 
     @Override
