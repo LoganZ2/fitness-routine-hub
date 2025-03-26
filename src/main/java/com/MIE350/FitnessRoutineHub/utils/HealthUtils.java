@@ -101,7 +101,6 @@ public class HealthUtils {
 
     public static double calculateFoodCalories(String foodName, double grams) {
         Map<String, Double> foodCaloriesMap = loadFoodCalories();
-        System.out.println(foodCaloriesMap);
 
         if (!foodCaloriesMap.containsKey(foodName)) {
             throw new IllegalArgumentException("Food not found: " + foodName);
@@ -113,7 +112,6 @@ public class HealthUtils {
 
     public static double calculateExerciseCalories(String exerciseType, double weight, double duration) {
         Map<String, Double> exerciseCaloriesMap = loadExerciseCaloriesPerKg();
-        System.out.println(exerciseCaloriesMap);
 
         if (!exerciseCaloriesMap.containsKey(exerciseType)) {
             throw new IllegalArgumentException("Exercise type not found: " + exerciseType);

@@ -58,12 +58,12 @@ public class DayInfoService implements IDayInfoService {
         List<DayInfo> dayInfoList = user.getDayInfos();
         Optional<DayInfo> dayInfoOld = dayInfoList.stream().filter(d -> d.getDate().equals(dayInfo.getDate())).findFirst();
         if (dayInfoOld.isEmpty()) {
+            dayInfo.setUser(user);
             dayInfoList.add(dayInfo);
             userRepository.save(user);
             return dayInfo;
         } else {
             DayInfo di = dayInfoOld.get();
-            if (dayInfo.getDate() != null) di.setDate(dayInfo.getDate());
             if (dayInfo.getChallengeCompleted() != null) di.setChallengeCompleted(dayInfo.getChallengeCompleted());
             if (dayInfo.getNetCalories() != null) di.setNetCalories(dayInfo.getNetCalories());
             userRepository.save(user);
