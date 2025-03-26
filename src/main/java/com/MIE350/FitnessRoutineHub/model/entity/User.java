@@ -71,7 +71,7 @@ public class User {
     @JsonManagedReference
     private HealthProfile healthProfile;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<DayInfo> dayInfos;
 

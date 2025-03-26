@@ -35,7 +35,9 @@ public class DayInfoService implements IDayInfoService {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         List<DayInfo> dayInfoList = user.getDayInfos();
         HealthProfile hp = user.getHealthProfile();
-        DayInfo dayInfo = dayInfoList.stream().filter(d -> d.getDate().equals(date)).findFirst().orElseThrow(MissingDayInfoException::new);
+        DayInfo newToday = new DayInfo();
+        newToday.setDate(date);
+        DayInfo dayInfo = dayInfoList.stream().filter(d -> d.getDate().equals(date)).findFirst().orElse(newToday);
         double netCalories = HealthUtils.calculateTotalCalories(hp.getWeight(), dayCaloriesDTO.getFoodIntake(), dayCaloriesDTO.getExerciseData());
         dayInfo.setNetCalories(netCalories);
         double netCaloriesRequirement = HealthUtils.calculateNetCalories(hp.getHeight(), hp.getWeight(), hp.getAge(), hp.getObjective());
