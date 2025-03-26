@@ -24,7 +24,7 @@ public class DayInfoController {
         return dayInfoService.getDayInfos(id);
     }
 
-    @GetMapping("/{id}/challenge")
+    @PostMapping("/challenge/{id}")
     public Boolean checkChallengeCompletion(@PathVariable Long id, @RequestBody DayCaloriesDTO dayCalories) {
         return dayInfoService.checkChallengeCompletion(id, dayCalories);
     }
