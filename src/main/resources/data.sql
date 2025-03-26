@@ -23,14 +23,14 @@ INSERT INTO health_profile (id, gender, height, height_unit, weight, weight_unit
 VALUES (3, 2, 170, 0, 68, 0, 35, 0);
 
 -- 插入 day_info 表数据
-INSERT INTO day_info (id, user_id, date, challenge_completed, net_calories)
-VALUES (1, 1, '2023-03-15T08:00:00Z', TRUE, 1500.0);
+INSERT INTO day_info (user_id, date, challenge_completed, net_calories)
+VALUES (1, '2023-03-15T08:00:00Z', TRUE, 1500.0);
 
-INSERT INTO day_info (id, user_id, date, challenge_completed, net_calories)
-VALUES (2, 2, '2023-03-15T09:00:00Z', FALSE, 1200.0);
+INSERT INTO day_info (user_id, date, challenge_completed, net_calories)
+VALUES (2, '2023-03-15T09:00:00Z', FALSE, 1200.0);
 
-INSERT INTO day_info (id, user_id, date, challenge_completed, net_calories)
-VALUES (3, 3, '2023-03-15T10:00:00Z', TRUE, 1800.0);
+INSERT INTO day_info (user_id, date, challenge_completed, net_calories)
+VALUES (3, '2023-03-15T10:00:00Z', TRUE, 1800.0);
 
 -- 插入 Posts 表数据（使用 ordinal 值存储枚举 PostType）
 -- 根据枚举顺序：DISCUSSION=0, QUESTION=1, GUIDE=2, LOG=3, REVIEW=4

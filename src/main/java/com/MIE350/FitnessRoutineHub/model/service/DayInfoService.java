@@ -11,6 +11,7 @@ import com.MIE350.FitnessRoutineHub.utils.HealthUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +32,14 @@ public class DayInfoService implements IDayInfoService {
     @Override
     public Boolean checkChallengeCompletion(Long id, DayCaloriesDTO dayCaloriesDTO) {
         final int threshold = 100;
+        ZoneId zid = ZoneId.systemDefault();
         Instant date = dayCaloriesDTO.getDate();
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         List<DayInfo> dayInfoList = user.getDayInfos();
         HealthProfile hp = user.getHealthProfile();
         DayInfo newToday = new DayInfo();
         newToday.setDate(date);
-        DayInfo dayInfo = dayInfoList.stream().filter(d -> d.getDate().equals(date)).findFirst().orElse(newToday);
+        DayInfo dayInfo = dayInfoList.stream().filter(d -> d.getDate().atZone(zid).toLocalDate().equals(date.atZone(zid).toLocalDate())).findFirst().orElse(newToday);
         double netCalories = HealthUtils.calculateTotalCalories(hp.getWeight(), dayCaloriesDTO.getFoodIntake(), dayCaloriesDTO.getExerciseData());
         dayInfo.setNetCalories(netCalories);
         double netCaloriesRequirement = HealthUtils.calculateNetCalories(hp.getHeight(), hp.getWeight(), hp.getAge(), hp.getObjective());

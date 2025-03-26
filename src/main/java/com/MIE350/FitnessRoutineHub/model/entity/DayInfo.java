@@ -14,6 +14,7 @@ import java.util.Map;
 public class DayInfo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
