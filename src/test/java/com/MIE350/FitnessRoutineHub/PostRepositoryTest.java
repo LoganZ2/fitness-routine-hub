@@ -51,7 +51,7 @@ public class PostRepositoryTest {
     @Test
     void testFindAllByType() {
         User user = new User();
-        user.setUsername("jane_testFindAllByType"); // 添加唯一标识
+        user.setUsername("jane_testFindAllByType");
         user.setDescription("Jane's profile");
         user.setCreatedAt(Instant.now());
 
@@ -76,7 +76,7 @@ public class PostRepositoryTest {
 
         List<Post> guides = postRepository.findAllByType(PostType.GUIDE)
                 .stream()
-                .filter(p -> p.getUser().getUsername().equals("jane_testFindAllByType")) // 只看本测试数据
+                .filter(p -> p.getUser().getUsername().equals("jane_testFindAllByType"))
                 .collect(Collectors.toList());
 
         assertEquals(1, guides.size());

@@ -69,7 +69,7 @@ public class DayInfoServiceTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
             Boolean result = dayInfoService.checkChallengeCompletion(1L, dto);
-            assertTrue(result); // 100 - 85 = 15 < threshold 100
+            assertTrue(result);
         }
     }
 }
