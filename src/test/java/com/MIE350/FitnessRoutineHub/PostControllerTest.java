@@ -12,7 +12,6 @@ import com.MIE350.FitnessRoutineHub.model.service.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,8 +24,6 @@ import java.util.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-
 
 @WebMvcTest(PostController.class)
 public class PostControllerTest {
@@ -45,21 +42,22 @@ public class PostControllerTest {
 
     @Test
     void testGetAllPosts() throws Exception {
-        // 构造返回对象
         User user = new User();
         user.setId(1L);
         user.setUsername("tester");
 
         PostsDTO post = new PostsDTO(1L, user, "test title", PostType.DISCUSSION, "test body", Instant.now());
 
-        when(postService.getPosts()).thenReturn(List.of(post));
+        List<PostsDTO> posts = new ArrayList<>();
+        posts.add(post);
+
+        when(postService.getPosts()).thenReturn(posts);
 
         mockMvc.perform(get("/posts"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].title").value("test title"));
     }
-
 
     @Test
     void testGetPostById() throws Exception {
@@ -73,8 +71,8 @@ public class PostControllerTest {
                 "sample title",
                 PostType.DISCUSSION,
                 "sample body",
-                new ArrayList<>(),    // likes
-                new ArrayList<>(),    // replies
+                new ArrayList<>(),
+                new ArrayList<>(),
                 Instant.now(),
                 Instant.now()
         );
@@ -86,44 +84,50 @@ public class PostControllerTest {
                 .andExpect(jsonPath("$.title").value("sample title"));
     }
 
-
-
     @Test
     void testAddPost() throws Exception {
-        // 输入的 JSON map
+        // 1. 构造前端传入的 JSON 数据
         Map<String, Object> input = new HashMap<>();
         input.put("title", "test post");
         input.put("body", "post body");
         input.put("type", "DISCUSSION");
-        input.put("user", Map.of("id", 1L));
+        input.put("user", Map.of("id", 1L)); // controller 会 post.getUser().getId()
 
-        // userService 返回 UserDTO（Controller 会用 post.getUser().getId()）
+        // 2. 构造完整 User 实体（必须包含 username）
         User user = new User();
         user.setId(1L);
         user.setUsername("tester");
+        user.setDescription("desc");
+        user.setPosts(new ArrayList<>());
+        user.setFollowers(new HashSet<>());
+        user.setFollowings(new HashSet<>());
+        user.setDayInfos(new ArrayList<>());
+        user.setCreatedAt(Instant.now());
+        user.setUpdateAt(Instant.now());
+        user.setHealthProfile(null);
 
-        // postService.newPost 返回 Post 实体（controller 内部会转 DTO）
+        // 3. 构造返回的 Post 实体（controller 最终返回 PostDTO）
         Post savedPost = new Post();
         savedPost.setId(99L);
         savedPost.setTitle("test post");
         savedPost.setBody("post body");
         savedPost.setType(PostType.DISCUSSION);
+        savedPost.setCreatedAt(Instant.now());
+        savedPost.setUpdateAt(Instant.now());
         savedPost.setUser(user);
 
-        // Mock service 方法
-        doReturn(user).when(userService).getUser(1L);
-        doReturn(savedPost).when(postService).newPost(any(Post.class));
+        // 4. Mock 行为
+        when(userService.getUser(1L)).thenReturn(new UserDTO(user)); // 注意返回的是 UserDTO
+        when(postService.newPost(any(Post.class))).thenReturn(savedPost);
 
-
-        // 请求 + 验证
+        // 5. 执行请求并断言返回值
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("test post"));
+                .andExpect(jsonPath("$.title").value("test post"))
+                .andExpect(jsonPath("$.id").value(99));
     }
-
-
 
 
 }

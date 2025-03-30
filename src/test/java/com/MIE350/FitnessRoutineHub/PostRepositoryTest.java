@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,7 +77,7 @@ public class PostRepositoryTest {
         List<Post> guides = postRepository.findAllByType(PostType.GUIDE)
                 .stream()
                 .filter(p -> p.getUser().getUsername().equals("jane_testFindAllByType")) // 只看本测试数据
-                .toList();
+                .collect(Collectors.toList());
 
         assertEquals(1, guides.size());
         assertEquals("Guide title", guides.get(0).getTitle());
